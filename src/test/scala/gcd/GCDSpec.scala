@@ -49,4 +49,14 @@ class GCDSpec extends FreeSpec with ChiselScalatestTester {
 
     }
   }
+
+  "t" in {
+    test(new GCD){c=>
+      c.io.loadingValues.poke(true.B)
+      c.io.value1.poke(1.U)
+      c.io.value2.poke(1.U)
+      c.io.outputGCD.expect(0.U)
+      c.io.outputValid.expect(true.B)
+    }
+  }
 }

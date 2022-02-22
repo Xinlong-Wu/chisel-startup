@@ -3,6 +3,7 @@
 package gcd
 
 import chisel3._
+import chisel3.stage.ChiselStage
 
 /**
   * Compute GCD using subtraction method.
@@ -17,18 +18,14 @@ class GCD extends Module {
     val outputGCD     = Output(UInt(16.W))
     val outputValid   = Output(Bool())
   })
-
-  val x  = Reg(UInt())
-  val y  = Reg(UInt())
-
-  when(x > y) { x := x - y }
-    .otherwise { y := y - x }
-
-  when(io.loadingValues) {
-    x := io.value1
-    y := io.value2
+  when(io.loadingValues){
+    io.outputGCD := 0.U
+    io.outputValid := false.B
+  }.otherwise{
+    io.outputValid := true.B
   }
+}
 
-  io.outputGCD := x
-  io.outputValid := y === 0.U
+object emitFullAdder extends App{
+  (new ChiselStage).emitVerilog((new GCD), Array("--target-dir", "generated"))
 }
